@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+import joblib
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.impute import SimpleImputer
@@ -8,6 +9,11 @@ from sklearn.metrics import (
     mean_absolute_error,
     mean_squared_error,
     r2_score
+)
+from sklearn.model_selection import (
+    KFold,
+    cross_validate,
+    train_test_split
 )
 from sklearn.model_selection import (
     train_test_split
@@ -82,6 +88,26 @@ full_pipeline = Pipeline([
     ))
 ])
 
+cv = KFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+
+cv_results = cross_validate(
+    full_pipeline,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="neg_root_mean_squared_error"
+)
+
+cv_rmse = -cv_results["test_score"]
+
+print(
+    f"CV RMSE: {cv_rmse.mean():.2f} "
+    f"+/- {cv_rmse.std():.2f}"
+)
 
 full_pipeline.fit(X_train, y_train)
 y_pred_full = full_pipeline.predict(X_test)
@@ -119,8 +145,6 @@ largest_errors = (
 
 print("\nTen largest prediction errors:")
 print(largest_errors.to_string())
-
-import joblib
 
 MODEL_PATH = BASE_DIR / "models" / "car_price_model.joblib"
 MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
