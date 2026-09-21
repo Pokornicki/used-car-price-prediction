@@ -10,7 +10,8 @@ RMSE is the primary evaluation metric because large prediction errors are partic
 
 ## Dataset
 
-The project uses `Car details v3.csv`.
+The project uses `Car details v3.csv` from the
+[Vehicle Dataset from CarDekho on Kaggle](https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho).
 
 - Original observations: 8,128
 - Observations after removing duplicates: 6,926
